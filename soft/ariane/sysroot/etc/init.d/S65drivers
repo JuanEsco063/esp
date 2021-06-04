@@ -50,3 +50,5 @@ for K in `ls *.ko`; do
 done
 
 lsmod
+
+echo root:openesp | chpasswd
