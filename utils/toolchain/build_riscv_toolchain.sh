@@ -14,8 +14,7 @@ RISCV_GNU_TOOLCHAIN_SHA_DEFAULT=afcc8bc655d30cf6af054ac1d3f5f89d0627aa79
 RISCV_GNU_TOOLCHAIN_SHA_PYTHON=2c037e631e27bc01582476f5b3c5d5e9e51489b8
 BUILDROOT_SHA=d6fa6a45e196665d6607b522f290b1451b949c2c
 
-BUILDROOT_BRANCH=2019.08.x
-#BUILDROOT_BRANCH=master
+BUILDROOT_BRANCH=master
 
 # A patch for buildroot RISCV64 with numpy enabled
 BUILDROOT_PATCH=${ESP_ROOT}/utils/toolchain/python-numpy.patch
@@ -211,6 +210,11 @@ runsudo ${TARGET_DIR} "$cmd"
 
 #Riscv
 echo ""
+if [[ "$python_en" -eq 1 ]]; then       # python enable
+    echo "This build comes with Python"
+else
+    echo "This build doesn't have Python"
+fi
 echo ""
 echo "=== Use the following to load RISC-V environment ==="
 echo -n "  export PATH=${RISCV}/bin:"; echo '$PATH'
