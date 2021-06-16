@@ -10,16 +10,16 @@ ESP_ROOT=$(realpath ${SCRIPT_PATH}/../..)
 LINUXSRC=${ESP_ROOT}/soft/ariane/linux
 LINUX_VERSION=4.20.0
 export SYSROOT=${ESP_ROOT}/soft/ariane/sysroot
-#RISCV_GNU_TOOLCHAIN_SHA=afcc8bc655d30cf6af054ac1d3f5f89d0627aa79
-RISCV_GNU_TOOLCHAIN_SHA=2c037e631e27bc01582476f5b3c5d5e9e51489b8
+RISCV_GNU_TOOLCHAIN_SHA_DEFAULT=afcc8bc655d30cf6af054ac1d3f5f89d0627aa79
+RISCV_GNU_TOOLCHAIN_SHA_PYTHON=2c037e631e27bc01582476f5b3c5d5e9e51489b8
 BUILDROOT_SHA=d6fa6a45e196665d6607b522f290b1451b949c2c
 
 BUILDROOT_BRANCH=2019.08.x
+#BUILDROOT_BRANCH=master
 
-# A small patch to force NumPy in buildroot for RISCV64
+# A patch for buildroot RISCV64 with numpy enabled
 BUILDROOT_PATCH=${ESP_ROOT}/utils/toolchain/python-numpy.patch
 
-#BUILDROOT_BRANCH=master
 
 DEFAULT_TARGET_DIR="/opt/riscv"
 TMP=${ESP_ROOT}/_riscv_build
@@ -107,6 +107,19 @@ runsudo ${TARGET_DIR} "$cmd"
 mkdir $TMP
 cd $TMP
 
+# Python
+echo "*** Python ... ***"
+if [ $(noyes "Do you want to enable Python") == "y" ]; then
+    python_en=1
+    RISCV_GNU_TOOLCHAIN_SHA=$RISCV_GNU_TOOLCHAIN_SHA_PYTHON
+else
+    python_en=0
+    RISCV_GNU_TOOLCHAIN_SHA=$RISCV_GNU_TOOLCHAIN_SHA_DEFAULT
+fi
+cd $TMP
+
+
+
 # Bare-metal compiler
 src=riscv-gnu-toolchain
 echo "*** Installing baremetal newlib tool chain... ***"
@@ -168,10 +181,15 @@ if [ $(noyes "Skip buildroot?") == "n" ]; then
     	cd $src
     fi
 
+if [[ "$python_en" -eq 1 ]]; then       # python enable
 #    git reset --hard ${BUILDROOT_SHA}
     git checkout ${BUILDROOT_BRANCH}
     git submodule update --init --recursive
     git apply ${BUILDROOT_PATCH}
+else                                    # python disable
+    git reset --hard ${BUILDROOT_SHA}
+    git submodule update --init --recursive
+fi
 
     make distclean
     make defconfig BR2_DEFCONFIG=${SCRIPT_PATH}/riscv_buildroot_defconfig
