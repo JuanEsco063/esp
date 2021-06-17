@@ -13,7 +13,7 @@ export SYSROOT=${ESP_ROOT}/soft/ariane/sysroot
 RISCV_GNU_TOOLCHAIN_SHA_DEFAULT=afcc8bc655d30cf6af054ac1d3f5f89d0627aa79
 RISCV_GNU_TOOLCHAIN_SHA_PYTHON=2c037e631e27bc01582476f5b3c5d5e9e51489b8
 BUILDROOT_SHA_DEFAULT=d6fa6a45e196665d6607b522f290b1451b949c2c
-BUILDROOT_SHA_PYTHON=e509ddd44fbe74adcd98afdf6e7e95eef8e51e44
+BUILDROOT_SHA_PYTHON=fbff7d7289cc95db991184f890f4ca1fcf8a101e
 
 #BUILDROOT_BRANCH=master
 
@@ -112,11 +112,11 @@ echo "*** Python ... ***"
 if [ $(noyes "Do you want to enable Python") == "y" ]; then
     python_en=1
     RISCV_GNU_TOOLCHAIN_SHA=$RISCV_GNU_TOOLCHAIN_SHA_PYTHON
-    BUILDROOT_SHA=$BUILDROOT_SHA_DEFAULT
+    BUILDROOT_SHA=$BUILDROOT_SHA_PYTHON
 else
     python_en=0
     RISCV_GNU_TOOLCHAIN_SHA=$RISCV_GNU_TOOLCHAIN_SHA_DEFAULT
-    BUILDROOT_SHA=$BUILDROOT_SHA_PYTHON
+    BUILDROOT_SHA=$BUILDROOT_SHA_DEFAULT
 fi
 cd $TMP
 
@@ -184,8 +184,7 @@ if [ $(noyes "Skip buildroot?") == "n" ]; then
     fi
 
 if [[ "$python_en" -eq 1 ]]; then       # python enable
-#    git reset --hard ${BUILDROOT_SHA}
-#    git checkout ${BUILDROOT_BRANCH}
+    git reset --hard ${BUILDROOT_SHA}
     git submodule update --init --recursive
     git apply ${BUILDROOT_PATCH}
 else                                    # python disable
