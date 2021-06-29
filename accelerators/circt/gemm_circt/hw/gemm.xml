@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="gemm" desc="Accelerator GEMM" data_size="12" device_id="053" hls_tool="stratus_hls">
+    <param name="rows1" desc="rows1" />
+    <param name="cols2" desc="cols2" />
+    <param name="cols1" desc="cols1" />
+    <param name="batch_size" desc="batch_size" />
+  </accelerator>
+</sld>
